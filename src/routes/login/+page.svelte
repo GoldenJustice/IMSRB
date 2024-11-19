@@ -1,14 +1,16 @@
 <script lang="ts">
-    import type { PageData } from './$types';
-    
-    let { ...props }: PageData = $props();
+
+    import { page } from '$app/stores';
+
+
    
-    // Google login handler
-    function handleGoogleLogin() {
-      // Dit is een vereenvoudigd voorbeeld. In werkelijkheid gebruik je de Google API.
-      console.log('Inloggen met Google knop geklikt');
-      // Hier zou je de Google OAuth2-logica integreren
-    }
+  let username = $state('')
+	let password = $state('')
+	let disabled = $derived(!username || !password)
+
+  let data, form = $props();
+
+
 
 </script>
 
@@ -18,19 +20,25 @@
       <p>Log in om toegang te krijgen tot het platform</p>
   
       <!-- Inloggen met Google knop -->
-      <button class="google-login-button" onclick='{handleGoogleLogin}'>
-        <img src="google-logo.svg" alt="Google Logo" class="google-logo" />
+      <button class="google-login-button" >
+        <!-- <img src="google-logo.svg" alt="Google Logo" class="google-logo" /> -->
         Inloggen met Google
       </button>
   
       <!-- Handmatige inlog velden -->
       <div class="manual-login">
         <h3>Of log in met je account</h3>
-        <input type="text" placeholder="Gebruikersnaam" class="login-input" />
-        <input type="password" placeholder="Wachtwoord" class="login-input" />
-        <button class="login-button">Inloggen</button>
+        {#if form?.fail}
+
+				<div class="subtekst bg-error">{form?.message}</div>
+			{/if}
+        <form action="?/login" method="POST">
+          <input bind:value={username} type="email" placeholder="Email addres" class="login-input" name="email" required/>
+          <input type="password" placeholder="Wachtwoord" class="login-input" name='password' required/>
+          <button class="login-button" type="submit">Inloggen</button>
+        </form>
+        </div>
       </div>
-    </div>
   </div>
   
   <style>

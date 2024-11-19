@@ -9,7 +9,7 @@ let {children} = $props();
 
 
 <div class="app-container">
-    <!-- Linker navigatiebalk -->
+  
   <!-- Linker navigatiebalk -->
   <aside class="sidebar">
     <!-- Logo bovenaan -->
