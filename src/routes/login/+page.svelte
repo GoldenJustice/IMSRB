@@ -1,6 +1,5 @@
 <script lang="ts">
-
-    import { page } from '$app/stores';
+    import type { ActionData, PageData } from './$types';
 
 
    
@@ -8,7 +7,8 @@
 	let password = $state('')
 	let disabled = $derived(!username || !password)
 
-  let data, form = $props();
+
+  let data: PageData, form: ActionData = $props();
 
 
 
@@ -20,22 +20,25 @@
       <p>Log in om toegang te krijgen tot het platform</p>
   
       <!-- Inloggen met Google knop -->
-      <button class="google-login-button" >
-        <!-- <img src="google-logo.svg" alt="Google Logo" class="google-logo" /> -->
-        Inloggen met Google
-      </button>
-  
+      <form method="POST">
+        
+        <button class="google-login-button" formaction="?/google">
+          <img src="google-logo.svg" alt="Google Logo" class="google-logo" />
+          Inloggen met Google
+        </button>
+      </form>
+        
       <!-- Handmatige inlog velden -->
       <div class="manual-login">
         <h3>Of log in met je account</h3>
-        {#if form?.fail}
-
-				<div class="subtekst bg-error">{form?.message}</div>
+        {#if form?.fail || data?.fail}
+        
+				<div class="subtekst bg-error">{data.fail ? "Something went wrong with OAuth!" : form?.message}</div>
 			{/if}
         <form action="?/login" method="POST">
           <input bind:value={username} type="email" placeholder="Email addres" class="login-input" name="email" required/>
           <input type="password" placeholder="Wachtwoord" class="login-input" name='password' required/>
-          <button class="login-button" type="submit">Inloggen</button>
+          <button {disabled} class="login-button" type="submit">Inloggen</button>
         </form>
         </div>
       </div>

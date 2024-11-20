@@ -6,7 +6,7 @@ import { env } from "$env/dynamic/private";
 export const load: PageServerLoad = async ({locals, url}) => {
 
     if (locals.pb.authStore.model) {
-        return redirect (303, '/dashboard');
+        return redirect (303, '/');
     }
 
     const authMethods = await locals.pb.collection('users').listAuthMethods();
@@ -23,13 +23,16 @@ export const actions = {
         const email = data.get('email');
         const password = data.get('password');
 
-        if (!email || !password) {
+        console.log('request ontvangen');
 
+        if (!email || !password) {
+            console.log('request invalid');
             return fail(400, {emailRequired: email == null, passwordRequired: password ==null});
 
         }
 
         data.set('passwordConfirm', password?.toString())
+        console.log(data.getAll.toString());
 
         try {
             await locals.pb.collection('users').create(data);
@@ -42,7 +45,7 @@ export const actions = {
             return fail(500, {fail: true, message: eroorObj.data.message});
             
         }
-        throw redirect(303, '/dashboard');
+        throw redirect(303, '/');
 
     },
 
@@ -51,9 +54,10 @@ export const actions = {
         const data = await request.formData();
         const email = data.get('email');
         const password = data.get('password');
+        console.log('authenticate');
 
         if (!email || !password) {
-
+            console.log('request invalid');
             return fail(400, {emailRequired: email == null, passwordRequired: password ==null});
 
         }
@@ -101,14 +105,11 @@ export const actions = {
 
 
     },
-
-    google: async ({locals, cookies}) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const provider = (await locals.pb.collection('users').listAuthMethods()).authProviders.find((p: any) => p.name === 'google')
-
-        cookies.set('provider', JSON.stringify(provider), {httpOnly: true, path: '/auth/callback/google'});
+    google: async ({ locals, cookies }) => {
+        const provider = (await locals.pb.collection('users').listAuthMethods()).authProviders.find((p: any) => p.name === 'google');
+        cookies.set('provider', JSON.stringify(provider), {httpOnly: true, path: `/auth/callback/google`});
 
         throw redirect(303, provider?.authUrl + env.REDIRECT_URL + provider?.name);
-    }
+    },
 
 }
