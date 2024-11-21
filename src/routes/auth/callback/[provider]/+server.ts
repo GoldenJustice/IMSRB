@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({locals, url, cookies}) => {
             env.REDIRECT_URL + provider.name
         )        
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return redirect(303, '/login?fail=true');
     }
 

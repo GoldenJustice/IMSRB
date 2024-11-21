@@ -70,7 +70,7 @@ export const actions = {
         } catch (error) {
             const eroorObj = error as ClientResponseError;
 
-            return fail(500, {fail: true, message: eroorObj.data.message});
+            return fail(500, {fail: true, message: "We konden je niet inloggen, controleer je gegevens en probeer het opnieuw! ", mail: email});
             
         }
         throw redirect(303, '/');
