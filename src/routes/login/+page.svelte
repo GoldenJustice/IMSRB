@@ -1,6 +1,5 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { onMount } from 'svelte';
 
   /**
    * Extract data and form properties from the component's props.

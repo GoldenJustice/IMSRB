@@ -3,8 +3,8 @@
 
 
 let {children} = $props();
-</script>
 
+</script>
 
 
 
