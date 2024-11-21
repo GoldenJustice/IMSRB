@@ -17,7 +17,7 @@ Het belangrijkste doel van de Incidenten Management module is het bijhouden van 
 
 **Overzicht van functies:**
 
-- *Inloggen via Google-account*
+- Inloggen via Google-account
 - *Gebruikersrollen en rechten instellen (voertuigen, posten, leden)*
 - *Incidenten aanmaken met details zoals locatie, prioriteit en aantal slachtoffers*
 - *Betrokken eenheden koppelen aan incidenten*
