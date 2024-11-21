@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { env } from '$env/dynamic/public';
     import type { PageData } from './$types';
+    import PocketBase from 'pocketbase';
     
     let { ...props }: PageData = $props();
 
@@ -8,6 +10,15 @@
     console.log('Registreren met Google knop geklikt');
     // Hier zou je de Google OAuth2-logica integreren
   }
+
+
+
+  let email = $state('');
+  let password = $state('');
+
+
+
+
 </script>
 
 <div class="register-container">
@@ -24,11 +35,13 @@
       <!-- Handmatige registratie velden -->
       <div class="manual-register">
         <h3>Of maak een nieuw account aan</h3>
-        <input type="text" placeholder="Gebruikersnaam" class="register-input" />
-        <input type="email" placeholder="E-mailadres" class="register-input" />
-        <input type="password" placeholder="Wachtwoord" class="register-input" />
-        <input type="password" placeholder="Bevestig wachtwoord" class="register-input" />
-        <button class="register-button">Registreren</button>
+          <form >
+            <input type="text" placeholder="Gebruikersnaam" class="register-input" />
+            <input type="email" bind:value={email} placeholder="E-mailadres" class="register-input" />
+            <input type="password" bind:value={password} placeholder="Wachtwoord" class="register-input" />
+            <input type="password" placeholder="Bevestig wachtwoord" class="register-input" />
+            <button class="register-button" type="submit">Registreren</button>
+      	 </form>
       </div>
     </div>
   </div>
