@@ -41,7 +41,7 @@ export const actions = {
         const email = data.get('email');
         const password = data.get('password');
 
-        console.log('request ontvangen');
+        // console.log('request ontvangen');
 
         // Validate email and password fields.
         if (!email || !password) {
@@ -78,7 +78,7 @@ export const actions = {
         const data = await request.formData();
         const email = data.get('email');
         const password = data.get('password');
-        console.log('authenticate');
+        // console.log('authenticate');
 
         // Validate email and password fields.
         if (!email || !password) {
