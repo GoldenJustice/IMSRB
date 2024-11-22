@@ -1,5 +1,6 @@
 <script lang='ts'>
     import type { Snippet } from "svelte";
+    import { derived } from "svelte/store";
 
     interface IncidentenData {
         prio: number;
@@ -16,7 +17,10 @@
     let {prio, OGS, Melding, Locatie, Gebied, eenheden, Starttijd, children}:IncidentenData = $props();
     // Definieer kleuren op basis van prioriteit
     let prioriteitsKleur = $state('');
-    if (prio === 1) {
+    let titel = $state('');
+    
+    $effect(()=>{
+      if (prio === 1) {
       prioriteitsKleur = '#ff0000'; // Rood voor hoge prioriteit
     } else if (prio === 2) {
       prioriteitsKleur = '#ff8000'; // Oranje voor medium-hoge prioriteit
@@ -25,12 +29,20 @@
     } else if (prio === 4) {
       prioriteitsKleur = '#008000'; // Groen voor lage prioriteit
     }
-  
-    // Titeltekst opbouwen
-    let titel = $state(`Prio ${prio}`);
     if (OGS) {
-      titel += ' - OGS';
+      titel = `Prio ${prio} - OGS`;
+    } else {
+      titel = `Prio ${prio}`
     }
+    })
+
+  
+        // Titeltekst opbouwen
+
+
+    
+
+ 
   </script>
   
   <div class="incident-kaart">

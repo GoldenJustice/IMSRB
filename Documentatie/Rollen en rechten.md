@@ -25,7 +25,7 @@ Gebaseerd op de informatie die je hebt gegeven over de opbouw van de applicatie 
   - Toegang tot alle actieve incidenten binnen hun brigade, zelfs als ze zelf niet aan het incident zijn toegevoegd.
   - Geen toegang tot historische incidenten.
 
-## 4. Voertuig (`Voertuig`)
+## 4. Voertuig (`eenheid`)
 - **Beschrijving**: Toegang tot incidenten waarbij ze betrokken zijn binnen hun eigen brigade. Ze kunnen alleen de actieve incidenten van hun brigade inzien en bewerken.
 - **Rechten**:
   - Actieve incidenten van hun brigade bekijken waarbij ze zijn toegevoegd.
