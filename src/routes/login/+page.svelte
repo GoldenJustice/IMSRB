@@ -23,6 +23,8 @@
   let disabled = $derived(!username || !password);
   let loadingmanual = $state(false);
   let loadinggoogle = $state(false);
+
+  
 </script>
 
 <!-- Login form container -->
@@ -83,7 +85,7 @@
           loadingmanual = false;
         };
       }}>
-          <input bind:value={username} type="email" placeholder="Email adres" class="login-input" name="email" required/>
+          <input bind:value={username} type="text" placeholder="Email adres" class="login-input" name="email" required/>
           <input bind:value={password} type="password" placeholder="Wachtwoord" class="login-input" name='password' required/>
           <button {disabled} class="login-button" type="submit">   
             {#if loadingmanual}

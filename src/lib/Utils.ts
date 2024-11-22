@@ -1,5 +1,9 @@
+import { getToastStore, type ToastSettings, type ToastStore } from "@skeletonlabs/skeleton";
 import type { IsoDateString } from "./pocketbase-types";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const serializeNonPOJOs = (obj: any) => {
+	return structuredClone(obj);
+};
 
 export function getTime(date: IsoDateString){
 
@@ -14,3 +18,22 @@ export function getTime(date: IsoDateString){
     const timeFormat = currentHour + ":" + minutes
     return timeFormat;
 }
+
+
+
+export function notificatie(store: ToastStore,message: string, background?: string, duration?: number, hideDismiss?: boolean){
+    const timeins = duration || 5;
+    const timeinms = timeins*1000;
+
+    const toast: ToastSettings = {
+    message,
+    hideDismiss: hideDismiss || true,
+    timeout: timeinms,
+    background: background || 'variant-ghost-warning',
+    
+    };
+
+    store.trigger(toast);
+    
+}
+
