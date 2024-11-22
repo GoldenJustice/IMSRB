@@ -78,7 +78,7 @@ export const actions = {
         const data = await request.formData();
         const email = data.get('email');
         const password = data.get('password');
-        // console.log('authenticate');
+         console.log('authenticate');
 
         // Validate email and password fields.
         if (!email || !password) {
@@ -88,10 +88,15 @@ export const actions = {
 
         try {
             // Authenticate the user with PocketBase.
-            await locals.pb.collection('users').authWithPassword(email.toString().toLocaleLowerCase(), password.toString());
+            console.log(email)
+            console.log(password)
+
+           
+            const test = await locals.pb.collection('Users').authWithPassword(email.toString(), password.toString());
+
         } catch (error) {
             const eroorObj = error as ClientResponseError;
-
+            console.log(eroorObj)
             // If authentication fails, return a failure response.
             return fail(500, {fail: true, message: "We konden je niet inloggen, controleer je gegevens en probeer het opnieuw! ", mail: email});
         }

@@ -2,9 +2,11 @@
 
 
 
-let {children} = $props();
-</script>
+let {data, children} = $props();
 
+
+
+</script>
 
 
 
@@ -26,7 +28,7 @@ let {children} = $props();
 
     <!-- Gebruikersbol onderaan -->
     <div class="gebruiker">
-      <div class="gebruiker-bol">CLG120</div> <!-- Voorbeeld initialen -->
+      <div class="gebruiker-bol">{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
     </div>
   </aside>
 
