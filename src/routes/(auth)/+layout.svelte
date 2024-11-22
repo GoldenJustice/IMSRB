@@ -28,7 +28,7 @@ let {data, children} = $props();
 
     <!-- Gebruikersbol onderaan -->
     <div class="gebruiker">
-      <div class="gebruiker-bol">{data.user?.username}</div> <!-- Voorbeeld initialen -->
+      <div class="gebruiker-bol">{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
     </div>
   </aside>
 

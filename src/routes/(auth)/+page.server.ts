@@ -1,5 +1,5 @@
 
-import type { IncidentsResponse, UsersRecord, UsersResponse } from "$lib/pocketbase-types";
+import type { IncidentsResponse, UsersRecord, UsersResponse } from "$lib/algemeen/pocketbase-types";
 import type { PageServerLoad } from "./$types";
 
 

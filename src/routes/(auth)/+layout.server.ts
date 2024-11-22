@@ -1,4 +1,4 @@
-import {serializeNonPOJOs} from '$lib/Utils';
+import {serializeNonPOJOs} from '$lib/algemeen/Utils';
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async ({locals}) => {
