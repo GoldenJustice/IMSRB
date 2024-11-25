@@ -193,6 +193,19 @@ function werkIncidentLijstBij(incident: IncidentsResponse): void {
   }
 }
 
+  // Functie om informatie van Units op te halen en als string terug te geven
+  function getUnitsInfo(incident: any): string {
+    if (incident.expand && incident.expand.Units) {
+      return incident.expand.Units.map((unit: any) => {
+        const brigadeShortcode = unit.expand?.brigadeID?.shortcode || 'N/A';
+        const unitName = unit.name || 'N/A';
+        return `${brigadeShortcode}${unitName}`;
+      }).join(', ');
+    }
+    return 'Geen Units beschikbaar';
+  }
+
+
 // Wanneer de component wordt geladen
 onMount(() => {
   // Initialiseer PocketBase met de publieke URL
@@ -227,8 +240,12 @@ onMount(() => {
 
 
 {#each actieveIncidenten ?? [] as Inci}
+<a href="/incident/{Inci.id}" class="incident-link">
+  <div class="incident-kaart">
 <IncidentenKaart prio={Inci.Priority} OGS={Inci.OGS} Melding={Inci.Melding} 
-Locatie={Inci.Location} Gebied={Inci.Area} eenheden={Inci.Units.toString()} Starttijd={getTime(Inci.created)}></IncidentenKaart>
+Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Starttijd={getTime(Inci.created)}></IncidentenKaart>
+</div>
+</a>
 {/each}
 
 </section> 
@@ -242,4 +259,12 @@ Locatie={Inci.Location} Gebied={Inci.Area} eenheden={Inci.Units.toString()} Star
       gap: 20px; /* Spatie tussen kaarten */
       justify-content: center; /* Kaarten worden horizontaal gecentreerd */
     }
+
+  .incident-kaart {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
 </style>

@@ -8,6 +8,7 @@ import type { PageServerLoad } from "./$types";
 export const load = (async ({locals}) => {
 
     let user = locals.pb.authStore.model;
+    let expand = "Units.brigadeID"
 
 
     let filter = `Units:each ?= "${user?.unit_id}" && Status = "Actief"`;
@@ -16,8 +17,19 @@ export const load = (async ({locals}) => {
         filter = `Status = "Actief"`
     }
    
-    let incidenten = await locals.pb.collection('incidents').getFullList<IncidentsResponse>({filter});
+    let incidenten = await locals.pb.collection('Incidents').getFullList<IncidentsResponse>({
+        
+        filter,
+        expand
+        
+    });
     
+
+    // incidenten[0].expand.Units.forEach((element: { name: any; }) => {
+    //     console.log(element.expand.brigadeID.shortcode)
+    //     console.log(element.name)
+        
+    // });
 
 
     

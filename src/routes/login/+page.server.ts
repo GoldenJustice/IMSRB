@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({locals, url}) => {
         return redirect (303, '/');
     }
 
-    // Retrieve available authentication methods (e.g., OAuth2 providers).
+  
     const authMethods = await locals.pb.collection('users').listAuthMethods();
     const fail = url.searchParams.get('fail') === 'true';
 

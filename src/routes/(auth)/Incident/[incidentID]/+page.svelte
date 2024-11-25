@@ -1,5 +1,5 @@
   
-  <script>
+  <script lang='ts'>
 // @ts-nocheck
 
     // Functie om het accordeon-item te openen/sluiten
@@ -7,13 +7,27 @@
      * @param {string | number} index
      */
     function toggleAccordion(index) {
-      const content = document.querySelectorAll('.accordion-content')[index];
-      if (content.classList.contains('open')) {
-        content.classList.remove('open');
-      } else {
-        content.classList.add('open');
-      }
+     
     }
+
+    let {data} = $props(); 
+
+    let incident = data.incident;
+    let inciBrigade = data.Brigade;
+    let inciUnits = data.Units;
+    let user = data.user;
+
+
+    function getUnitsInfo(): string {
+
+      return incident.expand.Units.map((unit: any) => {
+        const brigadeShortcode = unit.expand?.brigadeID?.shortcode || 'N/A';
+        const unitName = unit.name || 'N/A';
+        return `${brigadeShortcode}${unitName}`;
+      }).join(', ');
+  
+  }
+
   </script>
 
 <div class="incident-pagina">
@@ -21,45 +35,43 @@
     <div class="incident-info">
       <h2>Incident Informatie</h2>
       <div class="incident-details">
-        <p><strong>Incident Type:</strong> EHBO / Vermissing / Overig</p>
-        <p><strong>Locatie:</strong> Adres of coördinaten</p>
-        <p><strong>Gebied:</strong> Gebiedsbeschrijving</p>
-        <p><strong>Prioriteit:</strong> Laag / Middel / Hoog</p>
-        <p><strong>OGS:</strong> Ja</p>
-        <p><strong>Status:</strong> Actief / Afgerond</p>
-        <p><strong>Betrokken Eenheden:</strong> Lijst van UnitID's (in JSON)</p>
-        <p><strong>Aantal Slachtoffers:</strong> 1</p>
+        <p><strong>Incident Type:</strong> {incident.IncidentType}</p>
+        <p><strong>Gebied:</strong> {incident.Area}</p>
+        <p><strong>Locatie:</strong> {incident.Location}</p>
+        <p><strong>Prioriteit:</strong> Prio: {incident.Priority}</p>
+        <p><strong>OGS:</strong> {incident.OGS? "OGS Afgegeven door post" : "Nee"}</p>
+        <p><strong>Betrokken Eenheden:</strong> {getUnitsInfo()}</p>
+        <p><strong>Aantal Slachtoffers:</strong> {incident.VictimCount}</p>
+
         <div class="incident-notitieblok">
-          <h3>Notitieblok</h3>
-          <textarea placeholder="Voeg hier notities toe..."></textarea>
+          <h2><strong>Notitieblok:</strong></h2>
+          <div>{incident.Notepad? incident.Notepad:"Geen info"}</div>
         </div>
       </div>
   
-      <div class="incident-chat-log">
+      <!-- <div class="incident-chat-log">
         <h3>Chat & Logboek</h3>
-        <!-- Chat en logboek UI toevoegen -->
+        Chat en logboek UI toevoegen 
         <div class="chat-log-container">
           <textarea placeholder="Typ een bericht..."></textarea>
         </div>
-      </div>
+      </div> -->
     </div>
   
     <!-- Rechter gedeelte: Slachtoffer accordeon -->
     <div class="victim-accordion">
       <h2>Slachtoffers</h2>
-      <div class="accordion-item">
-        <button class="accordion-header" onclick='{toggleAccordion(0)}'>Slachtoffer 1</button>
-        <div class="accordion-content">
-          <p>Details van Slachtoffer 1</p>
-        </div>
+
+     {#each Array(incident.VictimCount) as _, i}
+     <div class="accordion-item">
+      <button class="accordion-header" onclick="{toggleAccordion(1)}">Slachtoffer {i+1}</button>
+      <div class="accordion-content">
+        <p>Details van Slachtoffer {i+1}</p>
       </div>
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="{toggleAccordion(1)}">Slachtoffer 2</button>
-        <div class="accordion-content">
-          <p>Details van Slachtoffer 2</p>
-        </div>
-      </div>
-      <!-- Voeg meer slachtoffers toe indien nodig -->
+    </div>
+      
+     {/each}
+      Voeg meer slachtoffers toe indien nodig 
     </div>
   </div>
   
