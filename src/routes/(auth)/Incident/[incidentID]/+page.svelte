@@ -1,10 +1,12 @@
     <script lang='ts'>
     import { onDestroy, onMount } from 'svelte';
     import PocketBase from 'pocketbase';
-    import type { IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
+    import type { IncidentsResponse, IncidentsStatusOptions } from '$lib/algemeen/pocketbase-types.js';
     import { env } from '$env/dynamic/public';
-    import { getToastStore } from '@skeletonlabs/skeleton';
+    import { getToastStore, ListBox, ListBoxItem, SlideToggle } from '@skeletonlabs/skeleton';
     import { notificatie } from '$lib/algemeen/Utils.js';
+    import { redirect } from '@sveltejs/kit';
+    import { goto } from '$app/navigation';
 
 
 
@@ -20,7 +22,10 @@
     let {data} = $props(); 
 
     let incident = $state(data.incident);
-    // let inciBrigade = data.Brigade;
+  
+    let inciBrigade = $state(data.Brigade);
+    let brigadeGebieden = $state(JSON.parse(inciBrigade.Areas))
+
     // let inciUnits = data.Units;
     // let user = data.user;
 
@@ -83,7 +88,7 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
 
     // Abonneer op veranderingen in de 'Incidents' collectie
     pb.collection('Incidents').subscribe<IncidentsResponse>(incident?.id, async function (e) {
-      console.log("Incident veranderd, nieuwe gegevens:");
+      // console.log("Incident veranderd, nieuwe gegevens:");
       
       // Haal de nieuwe gegevens van het incident op, inclusief expand
       const updatedIncident = await pb.collection('Incidents').getOne<IncidentsResponse>(e.record.id, { expand: "Units.brigadeID,Brigade" });
@@ -95,7 +100,26 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
     });
   });
 
-  
+  let isEditing = $state(false);
+
+// Functie om bewerkingsstatus te wisselen
+    async function toggleEditMode() {
+    isEditing = !isEditing;
+    if (!isEditing) {
+        // Hier kun je code toevoegen om de wijzigingen op te slaan, bijvoorbeeld een API-aanroep
+        // console.log(`Incident update: ${incident.IncidentType}`);
+        pb = new PocketBase(env.PUBLIC_PB_URL);
+        pb.authStore?.loadFromCookie(document.cookie || '');
+
+        try{
+        const record = await pb.collection('Incidents').update(incident.id, incident);
+        } catch (error){
+            console.log("Update failed")
+        }
+        
+
+    }
+}
  
 
   </script>
@@ -106,31 +130,115 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
 
     <!-- Linker gedeelte: Incidentinformatie -->
     <div class="incident-info">
-      <h2>Incident Informatie</h2>
+      <div class="incident-titel-container">
+        <div class="title">{incident.Melding}</div>
+         {#if !isEditing}
+        <button type="button" class="btn-icon variant-filled-warning" aria-label="Bewerk incident" onclick={toggleEditMode}>
+         
+           <img src="/bewerkicoon.svg" alt="Bewerk icoon">  
+        </button>
+        {:else}
+        <button type="button" class="btn-icon variant-filled-success" aria-label="Incident Opslaan" onclick={toggleEditMode}>
+         
+          <img src="/saveicoon.svg" alt="Opslaan icoon">  
+       </button>
+        {/if}
+      </div>
+      
+      <!-- Zorg ervoor dat je de font-awesome CSS link opneemt om het icoon te laten werken -->
       <div class="incident-details">
-        <p><strong>Melding:</strong> {incident.Melding}</p>
-        <p><strong>Incident Type:</strong> {incident.IncidentType}</p>
-        <p><strong>Gebied:</strong> {incident.Area}</p>
-        <p><strong>Locatie:</strong> {incident.Location}</p>
-        <p><strong>Prioriteit:</strong> Prio {incident.Priority}</p>
-        <p><strong>OGS:</strong> {incident.OGS? "OGS Afgegeven!" : "Nee"}</p>
+        <p><strong>Incident Type:</strong>
+          {#if isEditing}
+          <select bind:value={incident.IncidentType} class="select">
+            <option value="EHBO">EHBO</option>
+            <option value="Vermissing">Vermissing</option>
+            <option value="Overig">Overig</option>
+          </select>
+          {:else}
+          {incident.IncidentType}
+          {/if} </p>
+
+        <p><strong>Gebied:</strong> 
+          {#if isEditing}
+          <select bind:value={incident.Area} class="select">
+          {#each brigadeGebieden as gebied}
+          <option value={gebied}>{gebied}</option>
+            
+          {/each}
+          </select>
+            {:else}
+             {incident.Area}
+          {/if}
+         
+        
+        </p>
+        <p><strong>Locatie:</strong> 
+          {#if isEditing}
+            <input class="input" bind:value={incident.Location} type="text" placeholder={incident.Location} />
+            {:else}
+            {incident.Location}
+          {/if}
+          
+        
+        </p>
+        <p><strong>Prioriteit:</strong> 
+          {#if isEditing}
+
+          <select bind:value={incident.Priority} class="select">
+            <option value="1">P1</option>
+            <option value="2">P2</option>
+            <option value="3">P3</option>
+            <option value="4">P4</option>
+            <option value="5">P5</option>
+          </select>
+
+            {:else}
+            Prio {incident.Priority}
+          {/if}
+          </p>
+        <p><strong>OGS:</strong> 
+          {#if isEditing}
+
+          <SlideToggle bind:checked={incident.OGS} name="slider" active="variant-filled-error" size="sm"/>
+
+          {:else}
+            {incident.OGS? "OGS Afgegeven!" : "Nee"}
+          {/if}
+          </p>
         <p><strong>Betrokken Eenheden:</strong> {getUnitsInfo()}</p>
         <p><strong>Aantal Slachtoffers:</strong> {incident.VictimCount}</p>
 
         <div class="incident-notitieblok">
           <h2><strong>Notitieblok:</strong></h2>
-          <div>{incident.Notepad? incident.Notepad:"Geen extra informatie"}</div>
+          <div>
+          {#if isEditing}
+          <textarea bind:value={incident.Notepad} class="textarea" rows="4" placeholder={incident.Notepad}></textarea>
+          {:else}
+          {incident.Notepad? incident.Notepad:"Geen extra informatie"}
+          {/if}
+          </div>
         </div>
+        {#if isEditing}
+        <div class="">
+          <div>
+            
+            <button type="button" onclick={() =>{//@ts-expect-error 
+            incident.Status = "Afgerond"; toggleEditMode(); goto('/') }} class="btn variant-filled-error">Incident Afronden</button>
+          </div> 
+                  
+        </div>
+     {/if}  
       </div>
+
   
       <!-- <div class="incident-chat-log">
         <h3>Chat & Logboek</h3>
         Chat en logboek UI toevoegen 
         <div class="chat-log-container">
           <textarea placeholder="Typ een bericht..."></textarea>
-        </div>
-      </div> -->
-    </div>
+        </div> -->
+      </div>
+    
 
   
     <!-- Rechter gedeelte: Slachtoffer accordeon -->
@@ -161,6 +269,7 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
       width: 100vw;
     }
   
+
     /* Incidentinformatie aan de linkerkant */
     .incident-info {
       flex: 1; /* Zorgt ervoor dat dit gedeelte evenveel ruimte gebruikt als de rechterkolom */
@@ -171,11 +280,23 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
       overflow-y: auto;
     }
   
+    .incident-titel-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+  .title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
     .incident-details p {
       margin: 10px 0;
     }
   
-    .incident-notitieblok textarea {
+    /* .incident-notitieblok textarea {
       width: 100%;
       height: 100px;
       border-radius: 8px;
@@ -193,7 +314,7 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
       border-radius: 8px;
       padding: 10px;
       box-sizing: border-box;
-    }
+    } */
   
     /* Slachtoffer accordeon aan de rechterkant */
     .victim-accordion {
@@ -233,7 +354,7 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
       display: none; /* Begin verstopt */
     }
   
-    .accordion-content.open {
-      display: block; /* Toon de inhoud wanneer geopend */
-    }
+    /* .accordion-content.open {
+      display: block; /* Toon de inhoud wanneer geopend 
+    } */
   </style>

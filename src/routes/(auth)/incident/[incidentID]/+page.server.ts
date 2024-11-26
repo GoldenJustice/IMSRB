@@ -23,5 +23,5 @@ export const load = (async ({locals, params}) => {
     
    
 
-    return {user, incident, Brigade, Units};
+    return {user, incident, Brigade, Units, expand};
 }) satisfies PageServerLoad;
