@@ -5,8 +5,9 @@ import type { PageServerLoad } from "../../$types";
 export const load = (async ({locals, params}) => {
 
     let user = locals.pb.authStore.model;
-
-    let {incidentID} = params;
+    let incidentID = params.id;
+    
+    console.log(incidentID)
 
     let expand = "Units.brigadeID,Brigade";
 
