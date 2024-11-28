@@ -29,15 +29,17 @@ const IncidentenNotiStore = getToastStore();
 
 
 
-
-
   function getUnitsInfo(): string {
 
+    if (incident.expand && incident.expand.Units) {
       return incident.expand.Units.map((unit: any) => {
         const brigadeShortcode = unit.expand?.brigadeID?.shortcode || 'N/A';
         const unitName = unit.name || 'N/A';
         return `${brigadeShortcode}${unitName}`;
       }).join(', ');
+    }
+    return 'Geen Units beschikbaar';
+    
  }
 
 function notificeerVeranderingen(updatedIncident: IncidentsResponse){
@@ -210,16 +212,16 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
           {/if}
           </div>
         </div>
-        {#if isEditing}
+        <!-- {#if isEditing}
         <div class="">
           <div>
             
-            <button type="button" onclick={() =>{//@ts-expect-error 
+            <button type="button" onclick={() =>{
             incident.Status = "Afgerond"; toggleEditMode(); goto('/') }} class="btn variant-filled-error">Incident Afronden</button>
           </div> 
                   
         </div>
-     {/if}  
+     {/if}   -->
       </div>
 
   
