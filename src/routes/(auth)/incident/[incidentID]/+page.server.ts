@@ -6,7 +6,7 @@ export const load = (async ({locals, params}) => {
 
     let user = locals.pb.authStore.model;
 
-    let incidentID = params.incidentID as string;
+    let {incidentID} = params;
 
     let expand = "Units.brigadeID,Brigade";
 
