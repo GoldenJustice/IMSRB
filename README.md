@@ -18,15 +18,15 @@ Het belangrijkste doel van de Incidenten Management module is het bijhouden van 
 **Overzicht van functies:**
 
 - Inloggen via Google-account
-- *Gebruikersrollen en rechten instellen (voertuigen, posten, leden)*
+- Gebruikersrollen en rechten instellen (voertuigen, posten, leden)
 - *Incidenten aanmaken met details zoals locatie, prioriteit en aantal slachtoffers*
-- *Betrokken eenheden koppelen aan incidenten*
-- *Incidenten realtime bekijken en bijwerken*
-- *Gedeeld notitieblok voor incidentnotities*
+- Betrokken eenheden koppelen aan incidenten *(Alleen nog via database, nog geen ui)*
+- Incidenten realtime bekijken en bijwerken
+- Gedeeld notitieblok voor incidentnotities
 - *Chatfunctie voor communicatie tussen betrokkenen*
-- *Incidenten afsluiten en automatisch verwijderen uit het overzicht*
-- *Uitgebreide incidentinformatie bekijken*
-- *Incidenten bewerken*
+- Incidenten afsluiten en automatisch verwijderen uit het overzicht
+- Uitgebreide incidentinformatie bekijken
+- Incidenten bewerken
 - *SITRAP doorgeven via SBARR (Situation, Background, Assessment, Recommendation, Repeat)*
 - *Admin gebied voor incidentenarchief en accountbeheer*
 
