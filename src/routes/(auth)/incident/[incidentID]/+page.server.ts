@@ -10,8 +10,6 @@ export const load = (async ({locals, params}) => {
 
     let expand = "Units.brigadeID,Brigade";
 
-
-
     let incident = await locals.pb.collection('Incidents').getOne<IncidentsResponse>(incidentID, {expand})
     // @ts-expect-error
     let Brigade = incident.expand.Brigade;
