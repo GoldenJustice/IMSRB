@@ -6,16 +6,16 @@ export const load = (async ({locals, params}) => {
 
     let user = locals.pb.authStore.model;
 
-    let incidentID = params.incidentID;
+    let incidentID = params.incidentID as string;
 
     let expand = "Units.brigadeID,Brigade";
 
 
 
     let incident = await locals.pb.collection('Incidents').getOne<IncidentsResponse>(incidentID, {expand})
-    // @ts-expect-error
+
     let Brigade = incident.expand.Brigade;
-    // @ts-expect-error
+
     let Units = incident.expand.Units;
 
 

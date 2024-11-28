@@ -84,6 +84,7 @@ export type IncidentsRecord = {
 	Status?: IncidentsStatusOptions
 	Units?: RecordIdString[]
 	VictimCount?: number
+	expand?: any
 }
 
 export enum VictimsVictimTypeOptions {

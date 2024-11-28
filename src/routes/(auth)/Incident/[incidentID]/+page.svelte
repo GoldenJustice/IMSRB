@@ -10,14 +10,6 @@
 
 
 
-    // Functie om het accordeon-item te openen/sluiten
-    /**
-     * @param {string | number} index
-     */
-     // @ts-expect-error
-    function toggleAccordion(index) {
-     
-    }
 
     let {data} = $props(); 
 
@@ -40,7 +32,7 @@ const IncidentenNotiStore = getToastStore();
 
 
   function getUnitsInfo(): string {
-      // @ts-expect-error
+
       return incident.expand.Units.map((unit: any) => {
         const brigadeShortcode = unit.expand?.brigadeID?.shortcode || 'N/A';
         const unitName = unit.name || 'N/A';
