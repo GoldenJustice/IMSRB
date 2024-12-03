@@ -3,7 +3,7 @@
     import PocketBase from 'pocketbase';
     import type { IncidentsResponse, IncidentsStatusOptions } from '$lib/algemeen/pocketbase-types.js';
     import { env } from '$env/dynamic/public';
-    import { getToastStore, ListBox, ListBoxItem, SlideToggle } from '@skeletonlabs/skeleton';
+    import { getModalStore, getToastStore, ListBox, ListBoxItem, SlideToggle, type ModalSettings } from '@skeletonlabs/skeleton';
     import { notificatie } from '$lib/algemeen/Utils.js';
     import { redirect } from '@sveltejs/kit';
     import { goto } from '$app/navigation';
@@ -17,6 +17,8 @@
   
     let inciBrigade = $state(data.Brigade);
     let brigadeGebieden = $state(JSON.parse(inciBrigade.Areas))
+
+    const modalStore = getModalStore();
 
     // let inciUnits = data.Units;
     // let user = data.user;
@@ -115,6 +117,18 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
     }
 }
  
+const modalAfsluitenbevestiging: ModalSettings = {
+    type: 'confirm',
+    title: 'Incident Afsluiten',
+    body: 'Weet je zeker dat je dit incident wilt afsluiten?',
+    response: (r: boolean) => {
+      if (r) {
+        incident.Status = "Afgerond" as IncidentsStatusOptions; 
+        toggleEditMode();
+        goto('/');
+    }
+}
+}
 
   </script>
 
@@ -212,16 +226,15 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
           {/if}
           </div>
         </div>
-        <!-- {#if isEditing}
+        {#if isEditing}
         <div class="">
           <div>
             
-            <button type="button" onclick={() =>{
-            incident.Status = "Afgerond"; toggleEditMode(); goto('/') }} class="btn variant-filled-error">Incident Afronden</button>
+            <button type="button" onclick={()=>{modalStore.trigger(modalAfsluitenbevestiging)}} class="btn variant-filled-error">Incident Afronden</button>
           </div> 
                   
         </div>
-     {/if}   -->
+     {/if}  
       </div>
 
   

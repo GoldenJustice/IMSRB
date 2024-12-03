@@ -1,6 +1,37 @@
 <script lang="ts">
+    import type { IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
+import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 
   let {data, children} = $props();
+
+
+    
+
+  const modalStore = getModalStore();
+  
+
+  const IncidentenAdd: ModalSettings = {
+        type: 'component',
+        component: 'ModalIncidentAdd',
+        response: (r: IncidentsResponse) => {
+            console.log(r)
+        },
+        meta: {
+            userdata: {
+                Area: '',
+                Brigade: data.user?.brigade,
+                Units: data.units,
+            }
+        }
+    }
+  
+    function openNieuwIncidentModal() {
+        modalStore.trigger(IncidentenAdd);
+        console.log("IncidentenAdd geopend");
+    }
+
+
+
   
   </script>
   
@@ -17,8 +48,8 @@
         
         <a href="/" class="nav-bol-link"><div class="nav-bol">Incidenten</div></a>
   
-        <div class="nav-bol">Incident<br>Starten</div>
-  
+        <div class="nav-bol" onclick={openNieuwIncidentModal} >Incident<br>Starten</div>
+        
       </div>
   
       <!-- Gebruikersbol onderaan -->
