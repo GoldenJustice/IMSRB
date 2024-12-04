@@ -5,7 +5,7 @@
     import "../app.css";
 
 
-    import { initializeStores, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
+    import { initializeStores, Modal, Toast, type ModalComponent, type ModalSettings } from '@skeletonlabs/skeleton';
 
 
     

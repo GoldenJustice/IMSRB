@@ -1,11 +1,15 @@
 <script lang="ts">
+    import { beforeNavigate } from '$app/navigation';
+    import { env } from '$env/dynamic/public';
     import type { IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
 import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+import PocketBase from 'pocketbase';
 
   let {data, children} = $props();
 
-
-    
+  let pb: PocketBase;
+  pb = new PocketBase(env.PUBLIC_PB_URL);
+  
 
   const modalStore = getModalStore();
   
@@ -14,20 +18,35 @@ import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
         type: 'component',
         component: 'ModalIncidentAdd',
         response: (r: IncidentsResponse) => {
-            console.log(r)
+            console.log('reactie')
+            if (pb) {
+    createIncident(r);
+} else {
+    console.log("PocketBase instance is not initialized.");
+}
+            
         },
         meta: {
             userdata: {
                 Area: '',
-                Brigade: data.user?.brigade,
+                Brigade: data.units[0].expand.brigadeID,
                 Units: data.units,
             }
         }
     }
   
+  
+    async function createIncident(newIncident: IncidentsResponse) {
+        try {
+            const createdIncident = await pb.collection('Incidents').create(newIncident);
+            console.log("Nieuw incident aangemaakt:", createdIncident);
+        } catch (error) {
+            console.log("Fout bij het aanmaken van een nieuw incident:", error);
+        }
+    }
     function openNieuwIncidentModal() {
         modalStore.trigger(IncidentenAdd);
-        console.log("IncidentenAdd geopend");
+       
     }
 
 
