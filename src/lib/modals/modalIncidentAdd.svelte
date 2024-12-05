@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type { UnitsResponse } from '$lib/algemeen/pocketbase-types';
-
-	// Stores
+    import type { BrigadesResponse, UnitsResponse } from '$lib/algemeen/pocketbase-types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
-    import type { SvelteComponent } from 'svelte';
+
+
 
 
 
@@ -35,28 +34,21 @@ $effect(() => {
 	formData.OGS = false;	}
 })
 
-  formData.Brigade = $modalStore[0].meta.userdata.Brigade.id;
-  
-  // Make a list of all Units in the modalstore Units
-	function getUnitsListOptions() {
-		return $modalStore[0].meta.userdata.Units.map((unit: UnitsResponse) => unit);
-	}
+    formData.Brigade = ($modalStore[0].meta.userdata.aangeslotenBrigades.map((brigade: BrigadesResponse) => brigade.id).join(','));
+
   
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(formData);
 		modalStore.close();
 	}
 
-const unitsOptions = getUnitsListOptions(); // Replace this with dynamic data if available
-
-const brigadeAreas = JSON.parse($modalStore[0].meta.userdata.Brigade.Areas || '[]');
-
+const unitsOptions = $modalStore[0].meta.userdata.Units.map((unit: UnitsResponse) => unit);
+const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((brigade: BrigadesResponse) => brigade);
 
 
-	// Base Classes
-	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-	const cHeader = 'text-2xl font-bold';
-	const cForm = 'border border-surface-500 p-4 space-y-4 rounded-container-token';
+
+
+
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -75,9 +67,10 @@ const brigadeAreas = JSON.parse($modalStore[0].meta.userdata.Brigade.Areas || '[
 			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label>Gebied:</label>
 			<select bind:value={formData.Area} class="input-field" placeholder="Voer gebied in..." >
-				{#each brigadeAreas as area}
-					<option value={area}>{area}</option>
-					
+				{#each BrigadesOptions as brigade}
+          {#each JSON.parse(brigade.Areas) as area}
+        <option value={area}>{area}</option>
+          {/each}
 				{/each}
 			</select>
 		  </div>

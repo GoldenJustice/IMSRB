@@ -1,15 +1,17 @@
 <script lang="ts">
-    import { beforeNavigate } from '$app/navigation';
     import { env } from '$env/dynamic/public';
     import type { IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
-import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+    import { notificatie } from '$lib/algemeen/Utils';
+import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 import PocketBase from 'pocketbase';
 
   let {data, children} = $props();
 
   let pb: PocketBase;
   pb = new PocketBase(env.PUBLIC_PB_URL);
-  
+
+  const IncidentenNotiStore = getToastStore();
+
 
   const modalStore = getModalStore();
   
@@ -20,17 +22,16 @@ import PocketBase from 'pocketbase';
         response: (r: IncidentsResponse) => {
             console.log('reactie')
             if (pb) {
-    createIncident(r);
-} else {
-    console.log("PocketBase instance is not initialized.");
+               createIncident(r);
+            } else {
+            notificatie(IncidentenNotiStore, "Kon incident niet aanmaken! Foutcode:#1F3045", "variant-ghost-error", 4);
 }
             
         },
         meta: {
             userdata: {
-                Area: '',
-                Brigade: data.units[0].expand.brigadeID,
-                Units: data.units,
+                aangeslotenBrigades: data.brigades ?? [],
+                Units: data.units ?? []
             }
         }
     }
@@ -39,9 +40,10 @@ import PocketBase from 'pocketbase';
     async function createIncident(newIncident: IncidentsResponse) {
         try {
             const createdIncident = await pb.collection('Incidents').create(newIncident);
-            console.log("Nieuw incident aangemaakt:", createdIncident);
+            
         } catch (error) {
-            console.log("Fout bij het aanmaken van een nieuw incident:", error);
+          notificatie(IncidentenNotiStore, "Kon incident niet aanmaken! Waarschijnlijk kloppen sommige velden niet. code:#1F3049", "variant-ghost-error", 4);
+
         }
     }
     function openNieuwIncidentModal() {
@@ -56,7 +58,7 @@ import PocketBase from 'pocketbase';
   
   <div class="app-container">
     <!-- Linker navigatiebalk -->
-    <aside class="sidebar">
+    <div class="sidebar">
       <!-- Logo bovenaan -->
       <div class="logo">
         <img src="/logo.svg" alt="Logo" />
@@ -67,7 +69,8 @@ import PocketBase from 'pocketbase';
         
         <a href="/" class="nav-bol-link"><div class="nav-bol">Incidenten</div></a>
   
-        <div class="nav-bol" onclick={openNieuwIncidentModal} >Incident<br>Starten</div>
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>Incident<br>Starten</div>
         
       </div>
   
@@ -75,7 +78,7 @@ import PocketBase from 'pocketbase';
       <div class="gebruiker">
         <div class="gebruiker-bol">{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
       </div>
-    </aside>
+    </div>
   
       <!-- Hoofdinhoud -->
       <main class="main-content">
