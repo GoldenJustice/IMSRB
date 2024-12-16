@@ -1,6 +1,6 @@
 <script lang="ts">
     import { env } from '$env/dynamic/public';
-    import type { IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
+    import type { IncidentsResponse, RittenstaatResponse } from '$lib/algemeen/pocketbase-types.js';
     import { notificatie } from '$lib/algemeen/Utils';
 import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 import PocketBase from 'pocketbase';
@@ -19,8 +19,12 @@ import PocketBase from 'pocketbase';
   const IncidentenAdd: ModalSettings = {
         type: 'component',
         component: 'ModalIncidentAdd',
-        response: (r: IncidentsResponse) => {
-            console.log('reactie')
+        response: (r) => {
+            if (r === undefined || r === false) {
+              
+              return;
+            }
+
             if (pb) {
                createIncident(r);
             } else {
@@ -35,7 +39,33 @@ import PocketBase from 'pocketbase';
             }
         }
     }
-  
+    const RittenstaatAdd: ModalSettings = {
+        type: 'component',
+        component: 'ModalRittenStaatAdd',
+        response: (r) => {
+            console.log('reactie')
+
+            if (r === undefined || r === false) {
+              return;
+            }
+
+            if (pb) {
+               console.log(r);
+               createRittenStaat(r);
+            } else {
+           console.log('Foutcode:#1F3046');
+}
+            
+        },
+        meta: {
+            userdata: {
+                User: data.user ?? [],
+                aangeslotenBrigades: data.brigades ?? [],
+                Units: data.units ?? [],
+                ritten: data.ritten ?? []
+            }
+        }
+    }  
   
     async function createIncident(newIncident: IncidentsResponse) {
         try {
@@ -46,12 +76,28 @@ import PocketBase from 'pocketbase';
 
         }
     }
+
+    async function createRittenStaat(newRittenStaat: RittenstaatResponse) {
+        try {
+            const createdRittenStaat = await pb.collection('RittenStaat').create(newRittenStaat);
+            notificatie(IncidentenNotiStore, "Ritten staat aangemaakt!", "variant-ghost-success", 4);
+        } catch (error) {
+          notificatie(IncidentenNotiStore, "Kon incident niet aanmaken! Waarschijnlijk kloppen sommige velden niet. code:#1F3049", "variant-ghost-error", 4);
+        }
+      }
+
     function openNieuwIncidentModal() {
         modalStore.trigger(IncidentenAdd);
        
     }
 
+    function openRittenstaatAddModal() {
+        modalStore.trigger(RittenstaatAdd);
+       
+    }
 
+
+    
 
   
   </script>
@@ -76,7 +122,8 @@ import PocketBase from 'pocketbase';
   
       <!-- Gebruikersbol onderaan -->
       <div class="gebruiker">
-        <div class="gebruiker-bol">{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <div class="gebruiker-bol" role="button" tabindex="0" onclick={openRittenstaatAddModal}>{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
       </div>
     </div>
   

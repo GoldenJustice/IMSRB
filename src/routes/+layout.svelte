@@ -1,5 +1,7 @@
 <script lang="ts">
     import ModalIncidentAdd from "$lib/modals/modalIncidentAdd.svelte";
+    import ModalRittenStaatAdd from "$lib/modals/modalRittenStaatAdd.svelte";
+
 
 
     import "../app.css";
@@ -15,7 +17,8 @@
 
 
     const modalRegistry: Record<string, ModalComponent> = {
-        ModalIncidentAdd: {ref: ModalIncidentAdd}
+        ModalIncidentAdd: {ref: ModalIncidentAdd},
+        ModalRittenStaatAdd: {ref: ModalRittenStaatAdd}
 
     };
 
