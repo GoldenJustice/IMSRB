@@ -43,14 +43,14 @@ import PocketBase from 'pocketbase';
         type: 'component',
         component: 'ModalRittenStaatAdd',
         response: (r) => {
-            console.log('reactie')
+            
 
             if (r === undefined || r === false) {
               return;
             }
 
             if (pb) {
-               console.log(r);
+              
                createRittenStaat(r);
             } else {
            console.log('Foutcode:#1F3046');

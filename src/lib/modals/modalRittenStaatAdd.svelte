@@ -20,7 +20,6 @@ let formData = $state({
     aankomstadres: {}
 })
 
-$inspect(formData)
 
 let activiteiten = $state(Object.values(RittenstaatActiviteitOptions))
 
@@ -131,35 +130,15 @@ function getLatestKMFromVoertuig(voertuigID: string) {
 
 
 
-  <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label>Vertrek addres:</label>
-  <input bind:value={formData.vertrekadres} class="input-field" type="json" />
-
-  </div>
-
-  <div class="form-group">
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label>Aankomst address:</label>
     <input bind:value={formData.aankomstadres} class="input-field" type="text" />
-
-    </div>    
+  </div>
 {/if}
           
     
 
-		  
-		  <!-- <div class="form-group full-width">
-			
-			<label>Melding</label>
-			<textarea bind:value={formData} class="input-field" rows="1" placeholder="Voer melding in..."></textarea>
-		  </div>
-		
-		
-		<div class="form-group full-width">
 
-			<label>Notitieblok:</label>
-			<textarea bind:value={formData} class="input-field" rows="4" placeholder="Voer notitie in..."></textarea>
-		  </div>-->
 		</div>
 	  </div> 
 
