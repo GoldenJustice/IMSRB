@@ -15,13 +15,21 @@ export const load = (async ({locals}) => {
     
     const brigades = await locals.pb.collection('Brigades').getFullList<BrigadesResponse>({
         filter: `"${user?.brigade}" ~ id`
-    });   
+    });
+
+    const ritten = await locals.pb.collection('rittenstaat').getFullList<BrigadesResponse>({
+        filter: `"${units.map((unit) => unit.id).join(', ')}" ~ voertuig.id`,
+        sort: '-created'
+    }); 
 
 
     if (user == null || user == undefined) {
         return {user: null};
     }
 
-    return {user,units,brigades};
+    console.log(ritten)
+    console.log(units.map((unit) => unit.id).join(', '))
+
+    return {user,units,brigades, ritten};
 
 }) satisfies LayoutServerLoad;

@@ -54,7 +54,7 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-  <div class="modal-overlay">
+
 	<div class="incident-modal">
 	  <div class="incident-header">
 		<h2>Incident aanmaken</h2>
@@ -132,7 +132,7 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
 		<button class="btn btn-primary" onclick={onFormSubmit}>Opslaan</button>
 	  </div>
 	</div>
-</div>
+
  
  
 
@@ -140,50 +140,7 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
 
 
 <style>
-  /* .modal-example-form {
-    padding: 1rem;
-  }
 
-  .grid-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .form-row {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .label {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  } */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
 
   /* Incident Modal */
   .incident-modal {
@@ -197,7 +154,7 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
     display: flex;
     flex-direction: column;
     max-height: 90%;
-    overflow: hidden;
+    overflow: auto;
   }
 
   .incident-header {
