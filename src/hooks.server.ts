@@ -25,11 +25,13 @@ export const authentication: Handle = async ({event, resolve}) => {
         // Get an up-to-date auth store state by verifying and refreshing the loaded auth model (if any).
         if (event.locals.pb.authStore.isValid) {
             await event.locals.pb.collection('users').authRefresh();
+
         }
     } catch (_) {
         // Clear the auth store on failed refresh to reset authentication state.
         event.locals.pb.authStore.clear();
     }
+    
 
     // Proceed with the request resolution.
     const response = await resolve(event);
@@ -55,11 +57,29 @@ export const authorization: Handle = async ({ event, resolve }) => {
     if (!unprotectedPrefix.some((path) => event.url.pathname.startsWith(path))) {
         // Check if the user is logged in by verifying if `authStore.model` exists.
         const loggedIn = await event.locals.pb.authStore.model;
-        if (!loggedIn) {
+        if (loggedIn) {
             // Redirect unauthenticated users to the login page.
-            throw redirect(303, '/login');
-        }
+            
+            
+            
+            const path = event.url.pathname.toLowerCase();
+
+        //     if (!path.startsWith(`/${event.locals.pb.authStore.model?.role.toLowerCase()}`)){
+        //         console.log('Rol is niet in url')
+        //     switch (event.locals.pb.authStore.model?.role) {
+        //         case 'Eenheid':
+        //             throw redirect(303, `/${event.locals.pb.authStore.model?.role.toLowerCase()}${path}`)
+        //         break;
+
+        //     }
+        //      // doe niks want de url gaat goed.
+        //     console.log('Rol is wel in url')
+        // }
+
+
+        } else {throw redirect(303, '/login');}
     }
+   
 
     // Proceed with the request resolution as usual.
     const result = await resolve(event);

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { env } from '$env/dynamic/public';
-    import type { IncidentsResponse, RittenstaatResponse } from '$lib/algemeen/pocketbase-types.js';
-    import { notificatie } from '$lib/algemeen/Utils';
-import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
-import PocketBase from 'pocketbase';
+  import { env } from '$env/dynamic/public';
+  import type { IncidentsResponse, RittenstaatResponse } from '$lib/algemeen/pocketbase-types.js';
+  import { notificatie } from '$lib/algemeen/Utils';
+  import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
+  import PocketBase from 'pocketbase';
 
   let {data, children} = $props();
 
@@ -123,7 +123,7 @@ import PocketBase from 'pocketbase';
       <!-- Gebruikersbol onderaan -->
       <div class="gebruiker">
         <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <div class="gebruiker-bol" role="button" tabindex="0" onclick={openRittenstaatAddModal}>{data.user?.username || "User"}</div> <!-- Voorbeeld initialen -->
+        <div class="gebruiker-bol" role="button" tabindex="0" onclick={openRittenstaatAddModal}>{`${data.user?.username}`|| "User"}</div> <!-- Voorbeeld initialen -->
       </div>
     </div>
   

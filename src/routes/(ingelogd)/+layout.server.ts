@@ -27,8 +27,8 @@ export const load = (async ({locals}) => {
         return {user: null};
     }
 
-    console.log(ritten)
-    console.log(units.map((unit) => unit.id).join(', '))
+    // console.log(ritten)
+    // console.log(units.map((unit) => unit.id).join(', '))
 
     return {user,units,brigades, ritten};
 

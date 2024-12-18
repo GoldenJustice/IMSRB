@@ -5,7 +5,6 @@
     import { env } from '$env/dynamic/public';
     import { getModalStore, getToastStore, ListBox, ListBoxItem, SlideToggle, type ModalSettings } from '@skeletonlabs/skeleton';
     import { notificatie } from '$lib/algemeen/Utils.js';
-    import { redirect } from '@sveltejs/kit';
     import { goto } from '$app/navigation';
 
 
