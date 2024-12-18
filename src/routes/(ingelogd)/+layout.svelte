@@ -10,6 +10,8 @@
   let pb: PocketBase;
   pb = new PocketBase(env.PUBLIC_PB_URL);
 
+  let version = $state(env.PUBLIC_VERSION);
+
   const IncidentenNotiStore = getToastStore();
 
 
@@ -101,144 +103,193 @@
 
   
   </script>
-  
-  <div class="app-container">
-    <!-- Linker navigatiebalk -->
-    <div class="sidebar">
-      <!-- Logo bovenaan -->
-      <div class="logo">
-        <img src="/logo.svg" alt="Logo" />
-      </div>
-  
-      <!-- Navigatiebollen gecentreerd in het midden -->
-      <div class="nav-bollen">
-        
-        <a href="/" class="nav-bol-link"><div class="nav-bol">Incidenten</div></a>
-  
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>Incident<br>Starten</div>
-        
-      </div>
-  
-      <!-- Gebruikersbol onderaan -->
-      <div class="gebruiker">
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <div class="gebruiker-bol" role="button" tabindex="0" onclick={openRittenstaatAddModal}>{`${data.user?.username}`|| "User"}</div> <!-- Voorbeeld initialen -->
+
+<div class="app-container">
+  <!-- Linker navigatiebalk -->
+  <div class="sidebar">
+    <!-- Logo bovenaan -->
+    <div class="logo">
+      <img src="/logo.svg" alt="Logo" />
+    </div>
+
+    <!-- Navigatiebollen gecentreerd in het midden -->
+    <div class="nav-bollen">
+      <a href="/" class="nav-bol-link">
+        <div class="nav-bol">Incidenten</div>
+      </a>
+
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>
+        Incident<br />Starten
       </div>
     </div>
-  
-      <!-- Hoofdinhoud -->
-      <main class="main-content">
-          
-          {@render children()}
-  
-      </main>
+
+    <!-- Gebruikersbol onderaan -->
+
+      <!-- Gebruikersbol -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <div
+        class=" gebruiker gebruiker-bol"
+        role="button"
+        tabindex="0"
+        onclick={openRittenstaatAddModal}
+      >
+        {`${data.user?.username}` || "User"}
+      </div>
+
+
+    <!-- Tekst onderaan -->
+    <div class="footer-text">
+      DonkerSolutions - V{version}
     </div>
-    
-    <style>
-      /* Container voor de hele applicatie */
-      .app-container {
-        display: flex;
-        height: 100vh; /* Volledige hoogte van het scherm */
-      }
-    
-     /* Linker navigatiebalk */
-    .sidebar {
-      width: 10%;
-      background-color: #121c22; /* Donkere achtergrondkleur voor de navigatiebalk  2d2d2d */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between; /* Verdeel ruimte tussen boven, midden en onderkant */
-      padding: 20px 0;
-      box-sizing: border-box;
-    }
+  </div>
+
+  <!-- Hoofdinhoud -->
+  <main class="main-content">
+    {@render children()}
+  </main>
+</div>
+
+<style>
+/* Algemene stijlen */
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 10%;
+  max-width: 20%;
+  background-color: #121c22;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Zorgt ervoor dat items netjes verdeeld worden */
+  padding: 1rem 0;
+  box-sizing: border-box;
+  position: relative; /* Voor positionering van de footer-text */
+}
+
+.logo {
+  max-width: 40%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.nav-bollen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-bol-link {
+  width: 100%;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-bol {
+  width: 70%;
+  aspect-ratio: 1;
+  border: 2px solid #ff4500;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-width 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4500;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+  background-color: transparent;
+  text-align: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.nav-bol:hover {
+  transform: scale(1.1);
+  border-width: 3px;
+}
+
+.gebruiker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem; /* Zorgt voor voldoende ruimte boven de footer */
+}
+
+.gebruiker-bol {
+  width: 40%;
+  aspect-ratio: 1;
+  background-color: rgba(var(--color-surface-500) / 1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Tekst onderaan */
+.footer-text {
+  position: absolute; /* Plaats de tekst altijd onderaan */
+  bottom: 1rem; /* Houd een kleine afstand van de onderkant */
+  width: 100%; /* Zorg ervoor dat de tekst gecentreerd is */
+  text-align: center;
+  font-size: clamp(0.7rem, 1vw, 0.8rem); /* Klein maar leesbaar */
+  color: #6a6a6a99; /* Subtiel wit met transparantie */
+}
+
+/* Hoofdinhoud */
+.main-content {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}
+@media (max-width: 1350px) {
+  .sidebar {
+    width: 15%;
+  }
   
-    .logo {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  
-    .logo img {
-      max-width: 40%; /* Vergroot het logo voor betere zichtbaarheid */
-      height: auto;
-    }
-  
-    .nav-bollen {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      flex-grow: 1;
-      justify-content: center;
-      width: 100%; /* Maak de bollen zo breed mogelijk */
-    }
-  
-    .nav-bol-link {
-      width: 100%; /* Zorg ervoor dat de link de volledige breedte heeft */
-      text-decoration: none; /* Verwijder onderlijning van de link */
-      display: flex;
-      justify-content: center;
-    }
-  
-    .nav-bol {
-      width: 80%; /* Zorg ervoor dat de bol zo breed mogelijk is binnen de sidebar */
-      aspect-ratio: 1; /* Houd de bol vierkant */
-      border: 3px solid #FF4500; /* Oranje kleur voor de outline */
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #FF4500; /* Zelfde kleur als de outline */
-      font-weight: bold;
-      font-size: 1rem;
-      background-color: transparent; /* Geen opvulling, alleen de outline zichtbaar */
-      align-content: center;
-    }
-  
-    .nav-bol:hover {
-      transform: scale(1.1); /* Zoom-in effect bij hover */
-    }
-  
-    .gebruiker {
-      margin-bottom: 20px; /* Ruimte onderaan voor de gebruiker */
-    }
-  
-    .gebruiker-bol {
-      width: auto;
-      height: auto;
-      min-width: 50px; /* Minimale breedte voor de bol */
-      min-height: 50px; /* Minimale hoogte voor de bol */
-      padding: 10px; /* Padding om tekst niet tegen de rand te laten komen */
-      background-color: #3f51b5; /* Blauwe kleur voor de gebruikersbol */
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 1rem;
-      text-align: center;
-      overflow: hidden;
-      aspect-ratio: 1 / 1; /* Zorgt ervoor dat de bol altijd rond blijft */
-      box-sizing: border-box; /* Houd padding en border in de grootte */
-    }
-    
-      /* Hoofdinhoud */
-      .main-content {
-        width: 90%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        box-sizing: border-box;
-        overflow-y: hidden; /* Scrollen als de inhoud te groot is */
-        background-color: #f0f0f0; /* Lichtgrijze achtergrondkleur */
-      }
-    
-    </style>
-  
+  .main-content{width: 85%;}
+
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 20%;
+  }
+
+
+
+  .nav-bol {
+    width: 70%;
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+  }
+  .gebruiker-bol {
+    width: 50%;
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+  }
+  .footer-text {
+    font-size: clamp(0.6rem, 0.8vw, 0.7rem); /* Kleinere tekst op kleinere schermen */
+  }
+}
+</style>

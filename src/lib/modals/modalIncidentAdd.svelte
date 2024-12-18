@@ -111,19 +111,19 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
 				<option value={unit.id}>{unit.expand?.brigadeID?.shortcode || ''} {unit.name || ''} (36{unit.expand?.brigadeID?.number || ''}{unit.unitnumber || ''})</option>
 			{/each}
 			</select>
-
+		</div>
 		  </div>
 		  <div class="form-group full-width">
 			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label>Melding</label>
 			<textarea bind:value={formData.Melding} class="input-field" rows="1" placeholder="Voer melding in..."></textarea>
 		  </div>
-		</div>
+
 		
 		<div class="form-group full-width">
 			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label>Notitieblok:</label>
-			<textarea bind:value={formData.Notepad} class="input-field" rows="4" placeholder="Voer notitie in..."></textarea>
+			<textarea bind:value={formData.Notepad} class="input-field" rows="3" placeholder="Voer notitie in..."></textarea>
 		  </div>
 		
 	  </div>
@@ -140,133 +140,141 @@ const BrigadesOptions = $modalStore[0].meta.userdata.aangeslotenBrigades.map((br
 
 
 <style>
+/* Incident Modal */
+.incident-modal {
+  background-color: #121c22;
+  color: #fff;
+  width: 90%; /* Standaard breedte */
+  max-width: 800px; /* Maximale breedte */
+  border-radius: 12px; /* Ronde hoeken */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Subtiele schaduw */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  max-height: 95%; /* Zorg ervoor dat de modal niet groter wordt dan 85% van het scherm */
+  overflow-y: auto; /* Scrollen mogelijk maken indien nodig */
+  position: fixed; /* Altijd zichtbaar en gecentreerd */
+  top: 50%; /* Verticaal centreren */
+  left: 50%; /* Horizontaal centreren */
+  transform: translate(-50%, -50%); /* Fixeer exact midden */
+  box-sizing: border-box; /* Inclusief padding en borders */
+}
 
+.incident-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #444; /* Lichte scheiding */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
 
-  /* Incident Modal */
-  .incident-modal {
-    background-color: #121c22;
-    color: #fff;
-    width: 90%;
-    max-width: 800px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    max-height: 90%;
-    overflow: auto;
-  }
+.incident-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
 
-  .incident-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 
-  .incident-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-  }
+.incident-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Ruimte tussen elementen */
+  padding-right: 10px; /* Extra ruimte aan de rechterkant */
+  margin-bottom: 20px; /* Ruimte tussen body en footer */
+}
 
-  .close-btn {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
+.form-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Twee kolommen standaard */
+  gap: 20px; /* Ruimte tussen invoervelden */
+}
 
-  .incident-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto;
-    padding-right: 10px;
-  }
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
 
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input-field {
+  padding: 10px;
+  border-radius: 4px; /* Afgeronde hoeken */
+  border: 1px solid #ccc; /* Randkleur */
+  background-color: #2c2c2e; /* Donkere invoerveldkleur */
+  color: #fff;
+}
+
+.full-width {
+  grid-column: span 2; /* Velden die de volledige breedte nemen */
+}
+
+.incident-footer {
+  border-top: 1px solid #444; /* Lichte scheiding */
+  padding-top: 20px;
+  padding-bottom: 10px; /* Extra ruimte onder de knoppen */
+  display: flex;
+  justify-content: flex-end; /* Knoppen naar rechts uitlijnen */
+  gap: 10px; /* Ruimte tussen knoppen */
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px; /* Afgeronde knoppen */
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-neutral {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #c86100;
+  color: #fff;
+}
+
+.btn:hover {
+  opacity: 0.9; /* Subtiele hover-effect */
+}
+
+/* Responsief ontwerp voor kleinere schermen */
+@media (max-width: 768px) {
   .form-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr; /* Op mobiel één kolom */
   }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
+  .incident-modal {
+    width: 95%; /* Breder op kleine schermen */
+    max-height: 90%; /* Hoogte beperkt tot 85% */
+    padding: 15px; /* Compactere padding */
+    overflow-y: auto; /* Scrollen mogelijk maken voor inhoud */
   }
-
-  .form-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-  .input-field {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #2c2c2e;
-    color: #fff;
-  }
-
-  .full-width {
-    grid-column: span 2;
-  }
-
 
   .incident-footer {
-    border-top: 1px solid #444;
-    padding-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    flex-direction: column; /* Knoppen onder elkaar */
+    align-items: stretch; /* Knoppen vullen de volledige breedte */
+    padding-bottom: 10px; /* Extra ruimte onderaan */
   }
 
   .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+    width: 100%; /* Knoppen nemen volledige breedte in */
+    margin-bottom: 10px; /* Ruimte tussen knoppen */
   }
+}
 
-  .btn-neutral {
-    background-color: #6c757d;
-    color: #fff;
-  }
 
-  .btn-primary {
-    background-color: #c86100;
-    color: #fff;
-  }
-
-  .btn:hover {
-    opacity: 0.9;
-  }
-
-  /* Responsief ontwerp voor kleinere schermen */
-  @media (max-width: 768px) {
-    .form-section {
-      grid-template-columns: 1fr; /* Op mobiel één kolom */
-    }
-
-    .incident-modal {
-      width: 95%;
-      padding: 15px;
-    }
-
-    .incident-footer {
-      flex-direction: column; /* Knoppen onder elkaar op mobiel */
-      align-items: stretch;
-    }
-
-    .btn {
-      width: 100%; /* Knoppen nemen de volledige breedte in */
-      margin-bottom: 10px; /* Ruimte tussen de knoppen */
-    }
-  }
   </style>
