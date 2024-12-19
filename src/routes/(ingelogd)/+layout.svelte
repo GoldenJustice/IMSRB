@@ -4,6 +4,8 @@
   import { notificatie } from '$lib/algemeen/Utils';
   import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
   import PocketBase from 'pocketbase';
+  import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
 
   let {data, children} = $props();
 
@@ -11,7 +13,7 @@
   pb = new PocketBase(env.PUBLIC_PB_URL);
 
   let version = $state(env.PUBLIC_VERSION);
-
+  let currenturl: string = $state("");
   const IncidentenNotiStore = getToastStore();
 
 
@@ -99,7 +101,9 @@
     }
 
 
-    
+   page.subscribe((value) => {
+     currenturl = value.url.pathname;
+    });
 
   
   </script>
@@ -113,10 +117,13 @@
     </div>
 
     <!-- Navigatiebollen gecentreerd in het midden -->
+
     <div class="nav-bollen">
-      <a href="/" class="nav-bol-link">
+  {#if !(currenturl === "/")}
+          <a href="/" class="nav-bol-link">
         <div class="nav-bol">Incidenten</div>
       </a>
+  {/if}
 
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>

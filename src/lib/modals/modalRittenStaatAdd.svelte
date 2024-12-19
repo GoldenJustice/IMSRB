@@ -228,9 +228,6 @@ function getLatestKMFromVoertuig(voertuigID: string) {
   color: #fff;
 }
 
-.full-width {
-  grid-column: span 2; /* Volledige breedte van het formulier */
-}
 
 .incident-footer {
   border-top: 1px solid #444; /* Scheiding tussen inhoud en footer */
