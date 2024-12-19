@@ -7,7 +7,7 @@ export const load = (async ({locals, params}) => {
     let user = locals.pb.authStore.model;
     let incidentID = params.id;
     
-    console.log(incidentID)
+    // console.log(incidentID)
 
     let expand = "Units.brigadeID,Brigade";
 
