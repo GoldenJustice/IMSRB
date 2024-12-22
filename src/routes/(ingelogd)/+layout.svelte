@@ -5,7 +5,9 @@
   import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
   import PocketBase from 'pocketbase';
   import { page } from '$app/stores';
-    import { goto } from '$app/navigation';
+    import { hasPermission } from '$lib/rechten/rechten';
+    import { Permissions } from '$lib/rechten/permissions.js';
+
 
   let {data, children} = $props();
 
@@ -73,8 +75,14 @@
   
     async function createIncident(newIncident: IncidentsResponse) {
         try {
-            const createdIncident = await pb.collection('Incidents').create(newIncident);
+          if (hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.AANMAKEN)) {
             
+          
+            const createdIncident = await pb.collection('Incidents').create(newIncident);
+          } else {
+            notificatie(IncidentenNotiStore, "Je hebt geen rechten om een incident te maken!", "variant-ghost-error", 4);
+          } 
+
         } catch (error) {
           notificatie(IncidentenNotiStore, "Kon incident niet aanmaken! Waarschijnlijk kloppen sommige velden niet. code:#1F3049", "variant-ghost-error", 4);
 
@@ -91,6 +99,11 @@
       }
 
     function openNieuwIncidentModal() {
+
+      if (!hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.AANMAKEN)) {
+        notificatie(IncidentenNotiStore, "Je hebt geen rechten om een incident te maken!", "variant-ghost-error", 4);
+        return;
+      }
         modalStore.trigger(IncidentenAdd);
        
     }
@@ -125,10 +138,15 @@
       </a>
   {/if}
 
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
+
+  {#if hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.AANMAKEN)}
+    
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>
         Incident<br />Starten
       </div>
+
+  {/if}
     </div>
 
     <!-- Gebruikersbol onderaan -->

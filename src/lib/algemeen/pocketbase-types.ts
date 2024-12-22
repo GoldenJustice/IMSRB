@@ -15,7 +15,9 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	Permissions = "permissions",
 	Rittenstaat = "rittenstaat",
+	Roles = "roles",
 	Units = "units",
 	Users = "users",
 }
@@ -177,10 +179,30 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export enum PermissionsCategoryOptions {
+	"interface" = "interface",
+	"beheer" = "beheer",
+	"analytisch" = "analytisch",
+}
+
+export enum PermissionsFeatureOptions {
+	"incidenten" = "incidenten",
+	"gebruikers" = "gebruikers",
+}
+export type PermissionsRecord = {
+	category?: PermissionsCategoryOptions
+	created?: IsoDateString
+	description?: string
+	feature?: PermissionsFeatureOptions
+	id: string
+	name: string
+	updated?: IsoDateString
+}
+
 export enum RittenstaatActiviteitOptions {
-	Strandbewaking = "Strandbewaking",
-	Incident = "Incident",
-	Anders = "Anders",
+	"Strandbewaking" = "Strandbewaking",
+	"Incident" = "Incident",
+	"Anders" = "Anders",
 }
 export type RittenstaatRecord<Taankomstadres = unknown, Tvertrekadres = unknown> = {
 	aankomstadres?: null | Taankomstadres
@@ -195,6 +217,14 @@ export type RittenstaatRecord<Taankomstadres = unknown, Tvertrekadres = unknown>
 	updated?: IsoDateString
 	vertrekadres?: null | Tvertrekadres
 	voertuig?: RecordIdString
+}
+
+export type RolesRecord = {
+	Naam?: string
+	created?: IsoDateString
+	id: string
+	permissies?: RecordIdString[]
+	updated?: IsoDateString
 }
 
 export enum UnitsTypeOptions {
@@ -213,13 +243,6 @@ export type UnitsRecord = {
 	updated?: IsoDateString
 }
 
-export enum UsersRoleOptions {
-	"Admin" = "Admin",
-	"BrigadeAdmin" = "BrigadeAdmin",
-	"Commandant" = "Commandant",
-	"Eenheid" = "Eenheid",
-	"Lid" = "Lid",
-}
 export type UsersRecord = {
 	brigade?: RecordIdString[]
 	created?: IsoDateString
@@ -227,7 +250,8 @@ export type UsersRecord = {
 	emailVisibility?: boolean
 	id: string
 	password: string
-	role: UsersRoleOptions
+	permissies?: RecordIdString[]
+	role: RecordIdString
 	tokenKey: string
 	unit_id?: RecordIdString[]
 	updated?: IsoDateString
@@ -245,7 +269,9 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type PermissionsResponse<Texpand = unknown> = Required<PermissionsRecord> & BaseSystemFields<Texpand>
 export type RittenstaatResponse<Taankomstadres = unknown, Tvertrekadres = unknown, Texpand = unknown> = Required<RittenstaatRecord<Taankomstadres, Tvertrekadres>> & BaseSystemFields<Texpand>
+export type RolesResponse<Texpand = unknown> = Required<RolesRecord> & BaseSystemFields<Texpand>
 export type UnitsResponse<Texpand = unknown> = Required<UnitsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -261,7 +287,9 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	permissions: PermissionsRecord
 	rittenstaat: RittenstaatRecord
+	roles: RolesRecord
 	units: UnitsRecord
 	users: UsersRecord
 }
@@ -276,7 +304,9 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	permissions: PermissionsResponse
 	rittenstaat: RittenstaatResponse
+	roles: RolesResponse
 	units: UnitsResponse
 	users: UsersResponse
 }
@@ -294,7 +324,9 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_mfas'): RecordService<MfasResponse>
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
+	collection(idOrName: 'permissions'): RecordService<PermissionsResponse>
 	collection(idOrName: 'rittenstaat'): RecordService<RittenstaatResponse>
+	collection(idOrName: 'roles'): RecordService<RolesResponse>
 	collection(idOrName: 'units'): RecordService<UnitsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }
