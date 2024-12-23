@@ -100,6 +100,10 @@ export type IncidentsRecord = {
 	created?: IsoDateString
 	id: string
 	updated?: IsoDateString
+	expand?: {
+		Brigade?: BrigadesRecord
+		Units?: []
+	}
 }
 
 export enum VictimsVictimTypeOptions {

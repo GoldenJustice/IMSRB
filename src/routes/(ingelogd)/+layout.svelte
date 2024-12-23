@@ -1,6 +1,6 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public';
-  import type { IncidentsResponse, RittenstaatResponse } from '$lib/algemeen/pocketbase-types.js';
+  import type { IncidentsResponse, RittenstaatResponse, RolesRecord, UsersRecord } from '$lib/algemeen/pocketbase-types.js';
   import { notificatie } from '$lib/algemeen/Utils';
   import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
   import PocketBase from 'pocketbase';
@@ -139,7 +139,7 @@
   {/if}
 
 
-  {#if hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.AANMAKEN)}
+  {#if hasPermission(data.user as UsersRecord,data.gebruikerRol as RolesRecord,Permissions.INCIDENTEN.AANMAKEN)}
     
     <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div class="nav-bol" role="button" tabindex="0" onclick={openNieuwIncidentModal}>

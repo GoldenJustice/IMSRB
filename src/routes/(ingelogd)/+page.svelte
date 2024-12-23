@@ -249,7 +249,7 @@ onMount(() => {
 <a href="/incident/{Inci.id}" class="incident-link">
   <div class="incident-kaart">
 <IncidentenKaart prio={Inci.Priority} OGS={Inci.OGS} Melding={Inci.Melding} 
-Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Starttijd={getTime(Inci.created)}></IncidentenKaart>
+  Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Starttijd={getTime(Inci.created)}></IncidentenKaart>
 </div>
 </a>
 {:else}

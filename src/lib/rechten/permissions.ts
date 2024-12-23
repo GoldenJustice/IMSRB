@@ -2,6 +2,7 @@ export const Permissions = {
     INCIDENTEN: {
         AANMAKEN: "interface.incidenten.aanmaken",
         BEWERKEN: {
+            ALLE: "interface.incidenten.bewerken.*",
             PRIO: "interface.incidenten.bewerken.prio",
             MELDING: "interface.incidenten.bewerken.melding",
             NOTEPAD: "interface.incidenten.bewerken.notepad",
@@ -17,6 +18,7 @@ export const Permissions = {
         },
         SPECIFIEK:"interface.incidenten.specifiek.bekijken",
         SLUITEN: {
+            ALLE: "interface.incidenten.sluiten",
             EIGEN: "interface.incidenten.sluiten.eigen",
             BRIGADE: "interface.incidenten.sluiten.brigade"
         },
