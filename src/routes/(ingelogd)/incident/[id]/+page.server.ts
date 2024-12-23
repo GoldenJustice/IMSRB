@@ -1,5 +1,8 @@
 import type { IncidentsResponse } from "$lib/algemeen/pocketbase-types";
+import { hasPermission } from "$lib/rechten/rechten";
+import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "../../$types";
+import { Permissions } from "$lib/rechten/permissions";
 
 
 export const load = (async ({locals, params}) => {
@@ -8,6 +11,11 @@ export const load = (async ({locals, params}) => {
     let incidentID = params.id;
     
     // console.log(incidentID)
+
+    if(hasPermission(user, user?.permissies, Permissions.INCIDENTEN.SPECIFIEK) == false) {
+        redirect(303, '/');
+       
+    }
 
     let expand = "Units.brigadeID,Brigade";
 

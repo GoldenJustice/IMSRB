@@ -24,7 +24,7 @@ export const load = (async ({locals}) => {
 
 
     if (user == null || user == undefined) {
-        return {user: null};
+        return {user};
     }
 
     // console.log(ritten)

@@ -20,7 +20,7 @@ Het belangrijkste doel van de Incidenten Management module is het bijhouden van 
 - Inloggen via Google-account
 - Gebruikersrollen en rechten instellen (voertuigen, posten, leden)
 - Incidenten aanmaken met details zoals locatie, prioriteit en aantal slachtoffers
-- Betrokken eenheden koppelen aan incidenten *(Alleen nog via database, nog geen ui)*
+- Betrokken eenheden koppelen aan incidenten
 - Incidenten realtime bekijken en bijwerken
 - Gedeeld notitieblok voor incidentnotities
 - *Chatfunctie voor communicatie tussen betrokkenen*
@@ -29,6 +29,7 @@ Het belangrijkste doel van de Incidenten Management module is het bijhouden van 
 - Incidenten bewerken
 - *SITRAP doorgeven via SBARR (Situation, Background, Assessment, Recommendation, Repeat)*
 - *Admin gebied voor incidentenarchief en accountbeheer*
+- Voor verschillende acties zijn rechten nodig. Zie /docs/rechten.md voor een overzicht van het rechten systeem
 
 ### Protocollen Management
 
@@ -37,7 +38,7 @@ Het belangrijkste doel van de Incidenten Management module is het bijhouden van 
 
 ### Rittenstaat
 
-- *Registratie van gereden ritten*
+- Registratie van gereden ritten
 - *Overzicht en rapportage van voertuiggebruik*
 
 ### Tank Administratie

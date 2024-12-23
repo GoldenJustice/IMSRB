@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { env } from '$env/dynamic/public';
     import type { PageData } from './$types';
-    import PocketBase from 'pocketbase';
+
     
     let { ...props }: PageData = $props();
 

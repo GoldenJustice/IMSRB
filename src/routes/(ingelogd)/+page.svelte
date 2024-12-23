@@ -6,6 +6,9 @@
     import { env } from "$env/dynamic/public";
     import { getToastStore} from "@skeletonlabs/skeleton";
     import { getTime, notificatie } from "$lib/algemeen/Utils.js";
+    import { goto } from "$app/navigation";
+    import { hasPermission } from "$lib/rechten/rechten";
+    import { Permissions } from "$lib/rechten/permissions";
 
 
 
@@ -232,21 +235,36 @@ onMount(() => {
 
 
 
-
 </script>
 <section class="incidenten-overzicht">
 
        
+{#if actieveIncidenten.length === 0}
+  <p>Geen incidenten beschikbaar</p>
+{/if}
 
 
 {#each actieveIncidenten ?? [] as Inci}
+{#if hasPermission(data.user,data.gebruikerRol, Permissions.INCIDENTEN.SPECIFIEK)}
 <a href="/incident/{Inci.id}" class="incident-link">
+  <div class="incident-kaart">
+<IncidentenKaart prio={Inci.Priority} OGS={Inci.OGS} Melding={Inci.Melding} 
+  Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Starttijd={getTime(Inci.created)}></IncidentenKaart>
+</div>
+</a>
+{:else}
+
+<div class="incident-link">
   <div class="incident-kaart">
 <IncidentenKaart prio={Inci.Priority} OGS={Inci.OGS} Melding={Inci.Melding} 
 Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Starttijd={getTime(Inci.created)}></IncidentenKaart>
 </div>
-</a>
+</div>
+
+{/if}
+
 {/each}
+
 
 </section> 
 

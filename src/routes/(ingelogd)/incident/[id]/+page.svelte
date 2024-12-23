@@ -1,11 +1,15 @@
     <script lang='ts'>
-    import { onDestroy, onMount } from 'svelte';
+    import { onMount } from 'svelte';
     import PocketBase from 'pocketbase';
-    import type { IncidentsResponse, IncidentsStatusOptions } from '$lib/algemeen/pocketbase-types.js';
+    import { IncidentsStatusOptions, type IncidentsResponse } from '$lib/algemeen/pocketbase-types.js';
     import { env } from '$env/dynamic/public';
-    import { getModalStore, getToastStore, ListBox, ListBoxItem, SlideToggle, type ModalSettings } from '@skeletonlabs/skeleton';
+    import { getModalStore, getToastStore, SlideToggle, type ModalSettings } from '@skeletonlabs/skeleton';
     import { notificatie } from '$lib/algemeen/Utils.js';
     import { goto } from '$app/navigation';
+    import { hasPermission } from '$lib/rechten/rechten.js';
+    import { Permissions } from '$lib/rechten/permissions.js';
+    import { updated } from '$app/stores';
+    import { redirect } from '@sveltejs/kit';
 
 
 
@@ -15,7 +19,7 @@
     let incident = $state(data.incident);
   
     let inciBrigade = $state(data.Brigade);
-    let brigadeGebieden = $state(JSON.parse(inciBrigade.Areas))
+    let brigadeGebieden = $state(JSON.parse(inciBrigade?.Areas ?? ""))
 
     const modalStore = getModalStore();
 
@@ -70,7 +74,7 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
          // console.log(`Notitieblok gewijzigd van ${incident.Notepad} naar ${updatedIncident.Notepad}`);
         }
         if (JSON.stringify(incident.Units) !== JSON.stringify(updatedIncident.Units)) {
-          notificatie(IncidentenNotiStore, `Betrokken eenheden veranderd!}`,'variant-ghost-error',4);
+          notificatie(IncidentenNotiStore, `Betrokken eenheden veranderd!`,'variant-ghost-error',4);
           //console.log(`Betrokken eenheden gewijzigd van ${JSON.stringify(incident.Units)} naar ${JSON.stringify(updatedIncident.Units)}`);
         }
 }
@@ -84,38 +88,78 @@ function notificeerVeranderingen(updatedIncident: IncidentsResponse){
     // Abonneer op veranderingen in de 'Incidents' collectie
     pb.collection('Incidents').subscribe<IncidentsResponse>(incident?.id, async function (e) {
       // console.log("Incident veranderd, nieuwe gegevens:");
-      
+  
       // Haal de nieuwe gegevens van het incident op, inclusief expand
-      const updatedIncident = await pb.collection('Incidents').getOne<IncidentsResponse>(e.record.id, { expand: "Units.brigadeID,Brigade" });
 
-      notificeerVeranderingen(updatedIncident);
-
-      // Werk het incident bij naar de nieuwste waarden
-      incident = updatedIncident;
-    });
-  });
-
-  let isEditing = $state(false);
-
-// Functie om bewerkingsstatus te wisselen
-    async function toggleEditMode() {
-    isEditing = !isEditing;
-    if (!isEditing) {
-        // Hier kun je code toevoegen om de wijzigingen op te slaan, bijvoorbeeld een API-aanroep
-        // console.log(`Incident update: ${incident.IncidentType}`);
-        pb = new PocketBase(env.PUBLIC_PB_URL);
-        pb.authStore?.loadFromCookie(document.cookie || '');
-
-        try{
-        const record = await pb.collection('Incidents').update(incident.id, incident);
-        } catch (error){
-            console.log("Update failed")
+      if (e.action === 'update'){
+        if (JSON.stringify(incident.Units) !== JSON.stringify(e.record.Units)) {
+          notificeerVeranderingen(e.record);
+          let updatedIncident = {} as IncidentsResponse;
+          try {
+            updatedIncident = await pb.collection('Incidents').getOne<IncidentsResponse>(e.record.id, { expand: "Units.brigadeID,Brigade" });
+          } catch (error) {
+            console.log('Er is een fout opgetreden! (#7F0003)')
+            
+          }
+          
+            incident = updatedIncident;
+            
+            return;
         }
+        notificeerVeranderingen(e.record);
+
+        incident.Area = e.record.Area;
+        incident.Location = e.record.Location;
+        incident.Notepad = e.record.Notepad;
+        incident.Melding = e.record.Melding;
+        incident.OGS = e.record.OGS;
+        incident.Priority = e.record.Priority;
+        incident.VictimCount = e.record.VictimCount;
+        incident.IncidentType = e.record.IncidentType;
+        incident.updated = e.record.updated;
+        incident.Status = e.record.Status;
+
+        if( e.record.Status == IncidentsStatusOptions.Afgerond){
+          goto( '/');
+        }
+
+        data.incident = incident;
         
 
-    }
-}
+        
+
+      }
+
+      
+        
+     
+
+      // Werk het incident bij naar de nieuwste waarden
+      
+    });
+  });
  
+
+async function updateIncident(nieuweWaardes: IncidentsResponse) {
+
+                if (!hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.AANMAKEN)) {
+                notificatie(IncidentenNotiStore, "Je hebt geen rechten om een incident te bewerken!", "variant-filled-error", 4);
+                return;
+              }
+
+          pb = new PocketBase(env.PUBLIC_PB_URL);
+        pb.authStore?.loadFromCookie(document.cookie || '');
+        
+        try{
+        const record = await pb.collection('Incidents').update(incident.id, nieuweWaardes);
+        
+        incident = nieuweWaardes;
+        } catch (error){
+            console.log("Er is een fout opgetreden (#7F0002)")
+          
+        }
+}
+
 const modalAfsluitenbevestiging: ModalSettings = {
     type: 'confirm',
     title: 'Incident Afsluiten',
@@ -123,12 +167,51 @@ const modalAfsluitenbevestiging: ModalSettings = {
     response: (r: boolean) => {
       if (r) {
         incident.Status = "Afgerond" as IncidentsStatusOptions; 
-        toggleEditMode();
+        // toggleEditMode();
         goto('/');
     }
 }
 }
 
+const IncidentenEdit: ModalSettings = {
+        type: 'component',
+        component: 'ModalIncidentEdit',
+        response: (r) => {
+            if (r === undefined || r === false) {
+              
+              return;
+            }
+
+            if (pb) {
+              //  console.log(`Incident update: ${r}`);
+               updateIncident(r);
+            } else {
+            notificatie(IncidentenNotiStore, "Kon incident niet bewerken! Foutcode:#1F3045", "variant-ghost-error", 4);
+}
+            
+        },
+        meta: {
+            userdata: {
+                incident: JSON.parse(JSON.stringify(incident)) ?? [],
+                user: data.user ?? [],
+                gebruikerRol: data.gebruikerRol ?? [],
+                aangeslotenBrigades: data.brigades ?? [],
+                Units: data.units ?? []
+            }
+        }
+    }
+
+
+function bewerkIncidentModal() {
+
+if (!hasPermission(data.user,data.gebruikerRol,Permissions.INCIDENTEN.BEWERKEN.ALLE)) {
+  notificatie(IncidentenNotiStore, "Je hebt geen rechten om een incident te bewerken!", "variant-filled-error", 4);
+  return;
+}
+
+  modalStore.trigger(IncidentenEdit);
+
+}
   </script>
 
   
@@ -139,78 +222,39 @@ const modalAfsluitenbevestiging: ModalSettings = {
     <div class="incident-info">
       <div class="incident-titel-container">
         <div class="title">{incident.Melding}</div>
-         {#if !isEditing}
-        <button type="button" class="btn-icon variant-filled-warning" aria-label="Bewerk incident" onclick={toggleEditMode}>
+        <button type="button" class="btn-icon variant-filled-warning" aria-label="Bewerk incident" onclick={bewerkIncidentModal}>
          
            <img src="/bewerkicoon.svg" alt="Bewerk icoon">  
         </button>
-        {:else}
-        <button type="button" class="btn-icon variant-filled-success" aria-label="Incident Opslaan" onclick={toggleEditMode}>
-         
-          <img src="/saveicoon.svg" alt="Opslaan icoon">  
-       </button>
-        {/if}
+
       </div>
       
       <!-- Zorg ervoor dat je de font-awesome CSS link opneemt om het icoon te laten werken -->
       <div class="incident-details">
         <p><strong>Incident Type:</strong>
-          {#if isEditing}
-          <select bind:value={incident.IncidentType} class="select">
-            <option value="EHBO">EHBO</option>
-            <option value="Vermissing">Vermissing</option>
-            <option value="Overig">Overig</option>
-          </select>
-          {:else}
-          {incident.IncidentType}
-          {/if} </p>
+          {incident.IncidentType}</p>
 
         <p><strong>Gebied:</strong> 
-          {#if isEditing}
-          <select bind:value={incident.Area} class="select">
-          {#each brigadeGebieden as gebied}
-          <option value={gebied}>{gebied}</option>
-            
-          {/each}
-          </select>
-            {:else}
              {incident.Area}
-          {/if}
+      
          
         
         </p>
         <p><strong>Locatie:</strong> 
-          {#if isEditing}
-            <input class="input" bind:value={incident.Location} type="text" placeholder={incident.Location} />
-            {:else}
+
             {incident.Location}
-          {/if}
+     
           
         
         </p>
         <p><strong>Prioriteit:</strong> 
-          {#if isEditing}
 
-          <select bind:value={incident.Priority} class="select">
-            <option value="1">P1</option>
-            <option value="2">P2</option>
-            <option value="3">P3</option>
-            <option value="4">P4</option>
-            <option value="5">P5</option>
-          </select>
-
-            {:else}
             Prio {incident.Priority}
-          {/if}
+     
           </p>
         <p><strong>OGS:</strong> 
-          {#if isEditing}
-
-          <SlideToggle bind:checked={incident.OGS} name="slider" active="variant-filled-error" size="sm"/>
-
-          {:else}
             {incident.OGS? "OGS Afgegeven!" : "Nee"}
-          {/if}
+          
           </p>
         <p><strong>Betrokken Eenheden:</strong> {getUnitsInfo()}</p>
         <p><strong>Aantal Slachtoffers:</strong> {incident.VictimCount}</p>
@@ -218,31 +262,22 @@ const modalAfsluitenbevestiging: ModalSettings = {
         <div class="incident-notitieblok">
           <h2><strong>Notitieblok:</strong></h2>
           <div>
-          {#if isEditing}
-          <textarea bind:value={incident.Notepad} class="textarea" rows="4" placeholder={incident.Notepad}></textarea>
-          {:else}
+
           {incident.Notepad? incident.Notepad:"Geen extra informatie"}
-          {/if}
           </div>
         </div>
-        {#if isEditing}
+<!-- 
         <div class="">
           <div>
             
             <button type="button" onclick={()=>{modalStore.trigger(modalAfsluitenbevestiging)}} class="btn variant-filled-error">Incident Afronden</button>
           </div> 
                   
-        </div>
-     {/if}  
+        </div> -->
+
       </div>
 
-  
-      <!-- <div class="incident-chat-log">
-        <h3>Chat & Logboek</h3>
-        Chat en logboek UI toevoegen 
-        <div class="chat-log-container">
-          <textarea placeholder="Typ een bericht..."></textarea>
-        </div> -->
+
       </div>
     
 
