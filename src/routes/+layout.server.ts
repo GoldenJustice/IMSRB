@@ -14,21 +14,29 @@ export const load = (async ({locals}) => {
     }
 
     try {
-       [gebruikerBrigade, gebruikerRol] = await Promise.all([
-        
-            locals.pb.collection('Brigades').getFullList({filter: `users_via_brigade.id ?~ "${user?.id}"`}),
-          locals.pb.collection('roles').getOne(`${user?.role}`)   
-          
-         
-      ])
+        gebruikerRol = await locals.pb.collection('roles').getOne(`${user?.role}`);
+
+                
+        // console.log(gebruikerRol)
 
     } catch (error) {
         console.log("Kon data niet laden! Error code #7F001")
+        console.log(error)
     }
 
+    // try {
 
+
+    //    gebruikerBrigade = await locals.pb.collection('Brigades').getFullList({filter: `users_via_brigade.id ?~ "${user?.id}"`});
+                
+    //     console.log(gebruikerBrigade)
+
+    // } catch (error) {
+    //     console.log("Kon data niet laden! Error code #7F002")
+    //     console.log(error)
+    // }
 
    
 
-    return {user, gebruikerBrigade, gebruikerRol};
+    return {user, gebruikerRol};
 }) satisfies LayoutServerLoad;

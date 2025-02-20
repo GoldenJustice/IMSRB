@@ -19,7 +19,7 @@ let { data } = $props();
 let pb: PocketBase;
 
 // Definieer de lijst van actieve incidenten en de eenheden van de gebruiker
-let actieveIncidenten = $state(data.incidenten);
+let actieveIncidenten = $state(data.incidenten || []);
 let gebruikerEenheden = $state(data.user?.unit_id || "");
 
 // Notificatiestore voor het weergeven van meldingen
@@ -31,6 +31,7 @@ const IncidentenNotiStore = getToastStore();
  */
 function incidentToevoegen(incident: IncidentsResponse) {
   // Voeg het incident toe aan de actieve incidenten
+  // @ts-ignore
   actieveIncidenten.push(incident);
 
   // Toon een notificatie dat er een nieuw incident is
@@ -45,6 +46,7 @@ function incidentToevoegen(incident: IncidentsResponse) {
  */
 function incidentVerwijderen(incident: IncidentsResponse) {
   // Zoek het index van het incident in de actieve incidenten
+  // @ts-ignore
   const incidentIndex = actieveIncidenten.findIndex((item) => item.id === incident.id);
 
   // Controleer of het incident gevonden is
@@ -53,6 +55,7 @@ function incidentVerwijderen(incident: IncidentsResponse) {
   }
 
   // Verwijder het incident uit de actieve incidenten
+  // @ts-ignore
   actieveIncidenten.splice(incidentIndex, 1);
 
   // Toon een notificatie dat het incident is afgesloten
@@ -67,10 +70,12 @@ function incidentVerwijderen(incident: IncidentsResponse) {
  */
 function incidentBijwerken(nieuweIncident: IncidentsResponse) {
   // Zoek het index van het incident in de actieve incidenten
+  // @ts-ignore
   const incidentIndex = actieveIncidenten.findIndex((item) => item.id === nieuweIncident.id);
 
   // Controleer of het incident aanwezig is
   if (incidentIndex !== -1) {
+    // @ts-ignore
     let huidigIncident = actieveIncidenten[incidentIndex];
 
     //console.log('Incident wordt bijgewerkt in de database.');
@@ -156,6 +161,7 @@ function incidentBijwerken(nieuweIncident: IncidentsResponse) {
  * @returns True als het incident aanwezig is, anders false.
  */
 function isIncidentAanwezig(incident: IncidentsResponse): boolean {
+  // @ts-ignore
   return actieveIncidenten.some((item) => item.id === incident.id);
 }
 
@@ -237,6 +243,11 @@ onMount(() => {
 
 </script>
 <section class="incidenten-overzicht">
+{#await data.incidenten}
+ <p>Incidenten aan het laden....</p> 
+{:then actieveIncidenten: IncidentsResponse[]} 
+
+
 
        
 {#if actieveIncidenten.length === 0}
@@ -265,7 +276,7 @@ Locatie={Inci.Location} Gebied={Inci.Area} eenheden={getUnitsInfo(Inci)} Startti
 
 {/each}
 
-
+{/await}
 </section> 
 
 

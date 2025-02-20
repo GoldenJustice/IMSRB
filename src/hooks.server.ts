@@ -54,6 +54,8 @@ export const authentication: Handle = async ({event, resolve}) => {
 const unprotectedPrefix = ['/login', '/auth' ];
 export const authorization: Handle = async ({ event, resolve }) => {
     // Protect any routes that are not prefixed with paths in `unprotectedPrefix`.
+    console.time('Handle')
+
     if (!unprotectedPrefix.some((path) => event.url.pathname.startsWith(path))) {
         // Check if the user is logged in by verifying if `authStore.model` exists.
         const loggedIn = await event.locals.pb.authStore.model;
@@ -83,6 +85,7 @@ export const authorization: Handle = async ({ event, resolve }) => {
 
     // Proceed with the request resolution as usual.
     const result = await resolve(event);
+    console.timeEnd('Handle')
     return result;
 };
 

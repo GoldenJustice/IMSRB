@@ -5,7 +5,7 @@ import { hasPermission } from "$lib/rechten/rechten";
 import type { PageServerLoad } from "./$types";
 
 
-
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const load = (async ({locals, parent}) => {
 
@@ -25,14 +25,13 @@ export const load = (async ({locals, parent}) => {
                     filter = `Status = "Actief"`
                 }
             
-
-           
-    let incidenten = await locals.pb.collection('Incidents').getFullList<IncidentsResponse>({
-        
-        filter,
-        expand
-        
-    });
+               let incidenten = locals.pb.collection('Incidents').getFullList<IncidentsResponse>({
+                        filter,
+                        expand
+                        
+                    });
+                    
+                  
 
     return {user, incidenten};
 
